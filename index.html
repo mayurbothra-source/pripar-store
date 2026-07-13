@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pripar — Natural Craft. Considered Living.</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --slate:#2C3E35;--flax:#C9B99A;--terra:#B85C38;--linen:#F7F3EE;
+  --linen2:#EDE8DF;--char:#2A2A2A;--muted:#7A7065;--border:#DDD5C8;
+  --success:#2d6a4f;--white:#fff;
+}
+html{scroll-behavior:smooth}
+body{background:var(--linen);color:var(--char);font-family:'Jost',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;font-family:'Jost',sans-serif}
+img{display:block;width:100%}
+
+/* ── UTILITIES ── */
+.serif{font-family:'Cormorant Garamond',serif;font-weight:300}
+.eyebrow{font-size:.65rem;letter-spacing:.22em;text-transform:uppercase}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;
+  justify-content:space-between;padding:20px 48px;background:var(--linen);
+  border-bottom:.5px solid var(--border);transition:padding .3s}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:1.5rem;
+  letter-spacing:.35em;color:var(--slate);text-transform:uppercase}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  transition:color .2s}
+.nav-links a:hover{color:var(--slate)}
+.nav-right{display:flex;align-items:center;gap:24px}
+.cart-btn{display:flex;align-items:center;gap:8px;background:none;padding:8px 0;
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}
+.cart-count{background:var(--terra);color:var(--white);border-radius:50%;
+  width:18px;height:18px;display:flex;align-items:center;justify-content:center;
+  font-size:.6rem;font-weight:500;font-family:'Jost',sans-serif}
+.cart-count.hidden{display:none}
+
+/* ── HERO ── */
+.hero{margin-top:69px;display:grid;grid-template-columns:1fr 1fr;min-height:72vh}
+.hero-left{background:var(--slate);display:flex;flex-direction:column;
+  justify-content:center;padding:80px 64px;position:relative}
+.hero-eyebrow{font-size:.65rem;letter-spacing:.22em;color:var(--flax);
+  text-transform:uppercase;margin-bottom:28px}
+.hero-title{font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:clamp(3rem,4.5vw,5rem);line-height:1;letter-spacing:.08em;
+  color:var(--linen);text-transform:uppercase;margin-bottom:28px}
+.hero-sub{font-size:.85rem;color:var(--flax);line-height:1.9;
+  max-width:300px;opacity:.8;margin-bottom:36px}
+.hero-cta{display:inline-block;background:var(--terra);color:var(--linen);
+  font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
+  padding:14px 32px;transition:background .25s}
+.hero-cta:hover{background:#a04e30}
+.hero-right{background:var(--linen2);display:grid;grid-template-columns:1fr 1fr;
+  grid-template-rows:1fr 1fr;gap:2px;padding:2px}
+.hero-img{background:var(--linen);display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden}
+.hero-img:first-child{grid-row:span 2}
+.hero-img svg{opacity:.12}
+.hero-img-label{position:absolute;bottom:12px;left:12px;font-size:.6rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* ── SECTION SHARED ── */
+.section{padding:80px 64px}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:48px}
+.section-title{font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:2.2rem;color:var(--slate);letter-spacing:.03em}
+.section-link{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);border-bottom:.5px solid var(--border);padding-bottom:2px;
+  transition:color .2s,border-color .2s}
+.section-link:hover{color:var(--terra);border-color:var(--terra)}
+
+/* ── FILTER BAR ── */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:40px}
+.filter-btn{background:none;border:.5px solid var(--border);color:var(--muted);
+  font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;padding:7px 16px;
+  transition:all .2s}
+.filter-btn:hover,.filter-btn.active{background:var(--slate);color:var(--linen);
+  border-color:var(--slate)}
+
+/* ── PRODUCT GRID ── */
+.product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.product-card{background:var(--linen2);border:.5px solid var(--border);
+  position:relative;transition:transform .25s,box-shadow .25s;cursor:pointer}
+.product-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(44,62,53,.08)}
+.product-img{aspect-ratio:3/4;background:var(--linen);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;border-bottom:.5px solid var(--border);
+  position:relative;overflow:hidden}
+.product-badge{position:absolute;top:12px;left:12px;background:var(--terra);
+  color:var(--linen);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px}
+.product-badge.new{background:var(--slate)}
+.product-overlay{position:absolute;inset:0;background:var(--slate);opacity:0;
+  transition:opacity .3s;display:flex;align-items:center;justify-content:center}
+.product-card:hover .product-overlay{opacity:.88}
+.quick-add{background:none;color:var(--linen);font-size:.65rem;letter-spacing:.16em;
+  text-transform:uppercase;border:.5px solid rgba(201,185,154,.4);padding:10px 20px;
+  transition:background .2s}
+.quick-add:hover{background:var(--terra);border-color:var(--terra)}
+.product-info{padding:16px 16px 20px}
+.product-origin{font-size:.6rem;letter-spacing:.16em;color:var(--terra);
+  text-transform:uppercase;margin-bottom:5px}
+.product-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;
+  font-weight:300;color:var(--slate);margin-bottom:4px}
+.product-desc{font-size:.75rem;color:var(--muted);line-height:1.5;margin-bottom:12px}
+.product-footer{display:flex;align-items:center;justify-content:space-between}
+.product-price{font-size:.9rem;font-weight:400;color:var(--char)}
+.add-to-cart{background:var(--slate);color:var(--linen);font-size:.62rem;
+  letter-spacing:.14em;text-transform:uppercase;padding:8px 14px;transition:background .2s}
+.add-to-cart:hover{background:var(--terra)}
+.add-to-cart.added{background:var(--success)}
+
+/* ── STORY STRIP ── */
+.story-strip{background:var(--slate);padding:64px;display:grid;
+  grid-template-columns:repeat(3,1fr);gap:2px}
+.story-item{padding:40px 32px;border:.5px solid rgba(201,185,154,.1);
+  transition:background .3s;position:relative}
+.story-item:hover{background:rgba(201,185,154,.05)}
+.story-num{font-family:'Cormorant Garamond',serif;font-size:2.5rem;
+  color:rgba(201,185,154,.15);margin-bottom:16px}
+.story-label{font-size:.65rem;letter-spacing:.2em;color:var(--flax);
+  text-transform:uppercase;margin-bottom:10px}
+.story-text{font-size:.82rem;color:rgba(247,243,238,.45);line-height:1.8}
+.story-bar{position:absolute;bottom:0;left:0;width:0;height:1px;
+  background:var(--terra);transition:width .4s}
+.story-item:hover .story-bar{width:100%}
+
+/* ── NEWSLETTER ── */
+.newsletter{background:var(--linen2);padding:72px 64px;text-align:center;
+  border-top:.5px solid var(--border)}
+.newsletter-title{font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:2.5rem;color:var(--slate);margin-bottom:12px}
+.newsletter-sub{font-size:.85rem;color:var(--muted);margin-bottom:36px;line-height:1.7}
+.newsletter-form{display:flex;max-width:440px;margin:0 auto}
+.newsletter-input{flex:1;background:var(--linen);border:.5px solid var(--border);
+  border-right:none;color:var(--char);font-family:'Jost',sans-serif;font-size:.85rem;
+  padding:14px 18px;outline:none}
+.newsletter-input:focus{border-color:var(--flax)}
+.newsletter-btn{background:var(--slate);color:var(--linen);font-size:.68rem;
+  letter-spacing:.16em;text-transform:uppercase;padding:14px 24px;transition:background .2s;white-space:nowrap}
+.newsletter-btn:hover{background:var(--terra)}
+
+/* ── FOOTER ── */
+footer{background:var(--slate);padding:48px 64px;display:grid;
+  grid-template-columns:1fr 1fr 1fr;gap:32px;border-top:.5px solid rgba(201,185,154,.2)}
+.footer-brand .footer-logo{font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:1.3rem;letter-spacing:.3em;color:var(--linen);text-transform:uppercase;margin-bottom:8px}
+.footer-brand p{font-size:.75rem;color:rgba(201,185,154,.6);line-height:1.7}
+.footer-col h4{font-size:.65rem;letter-spacing:.2em;color:var(--flax);
+  text-transform:uppercase;margin-bottom:16px}
+.footer-col ul{list-style:none}
+.footer-col ul li{margin-bottom:10px}
+.footer-col ul a{font-size:.78rem;color:rgba(247,243,238,.45);transition:color .2s}
+.footer-col ul a:hover{color:var(--flax)}
+.footer-bottom{background:var(--slate);padding:16px 64px;border-top:.5px solid rgba(201,185,154,.1);
+  display:flex;justify-content:space-between;align-items:center}
+.footer-bottom p{font-size:.65rem;color:rgba(201,185,154,.35);letter-spacing:.06em}
+
+/* ── CART DRAWER ── */
+.cart-overlay{position:fixed;inset:0;background:rgba(44,62,53,.5);z-index:300;
+  opacity:0;pointer-events:none;transition:opacity .3s}
+.cart-overlay.open{opacity:1;pointer-events:all}
+.cart-drawer{position:fixed;top:0;right:0;bottom:0;width:420px;background:var(--linen);
+  z-index:301;transform:translateX(100%);transition:transform .35s ease;
+  display:flex;flex-direction:column}
+.cart-drawer.open{transform:translateX(0)}
+.cart-header{display:flex;align-items:center;justify-content:space-between;
+  padding:24px;border-bottom:.5px solid var(--border)}
+.cart-header h2{font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:1.4rem;color:var(--slate);letter-spacing:.05em}
+.cart-close{background:none;font-size:1.3rem;color:var(--muted);padding:4px 8px;
+  transition:color .2s}
+.cart-close:hover{color:var(--terra)}
+.cart-items{flex:1;overflow-y:auto;padding:24px}
+.cart-empty{text-align:center;padding:60px 24px;color:var(--muted)}
+.cart-empty p{font-size:.85rem;line-height:1.7}
+.cart-item{display:flex;gap:16px;padding:16px 0;border-bottom:.5px solid var(--border)}
+.cart-item-img{width:70px;height:90px;background:var(--linen2);border:.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cart-item-info{flex:1}
+.cart-item-name{font-size:.85rem;font-weight:400;color:var(--slate);margin-bottom:4px}
+.cart-item-origin{font-size:.65rem;letter-spacing:.12em;color:var(--terra);
+  text-transform:uppercase;margin-bottom:8px}
+.cart-item-price{font-size:.85rem;color:var(--char)}
+.cart-item-qty{display:flex;align-items:center;gap:10px;margin-top:10px}
+.qty-btn{background:none;border:.5px solid var(--border);width:26px;height:26px;
+  font-size:.85rem;color:var(--slate);transition:all .2s}
+.qty-btn:hover{background:var(--slate);color:var(--linen);border-color:var(--slate)}
+.qty-num{font-size:.85rem;min-width:20px;text-align:center}
+.cart-item-remove{background:none;font-size:.65rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin-left:auto;align-self:flex-start;
+  transition:color .2s;padding:2px 0}
+.cart-item-remove:hover{color:var(--terra)}
+.cart-footer{padding:24px;border-top:.5px solid var(--border)}
+.cart-subtotal{display:flex;justify-content:space-between;margin-bottom:6px}
+.cart-subtotal span{font-size:.85rem;color:var(--muted)}
+.cart-subtotal strong{font-size:1rem;font-weight:400;color:var(--slate)}
+.cart-shipping{font-size:.72rem;color:var(--muted);margin-bottom:20px;
+  text-align:right;font-style:italic}
+.checkout-btn{width:100%;background:var(--terra);color:var(--linen);font-size:.72rem;
+  letter-spacing:.18em;text-transform:uppercase;padding:16px;margin-bottom:10px;
+  transition:background .2s}
+.checkout-btn:hover{background:#a04e30}
+.continue-btn{width:100%;background:none;border:.5px solid var(--border);
+  color:var(--muted);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:12px;transition:all .2s}
+.continue-btn:hover{border-color:var(--slate);color:var(--slate)}
+
+/* ── CHECKOUT PAGE ── */
+.checkout-page{display:none;min-height:100vh;margin-top:69px;
+  background:var(--linen);padding:60px 0}
+.checkout-container{max-width:960px;margin:0 auto;padding:0 40px;
+  display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:start}
+.checkout-left h2{font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:2rem;color:var(--slate);margin-bottom:32px;letter-spacing:.03em}
+.form-section{margin-bottom:32px}
+.form-section h3{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--terra);margin-bottom:20px;padding-bottom:8px;
+  border-bottom:.5px solid var(--border)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.form-row.full{grid-template-columns:1fr}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.form-group input,.form-group select{background:var(--white);border:.5px solid var(--border);
+  color:var(--char);font-family:'Jost',sans-serif;font-size:.88rem;padding:12px 14px;
+  outline:none;transition:border-color .2s;-webkit-appearance:none}
+.form-group input:focus,.form-group select:focus{border-color:var(--flax)}
+.form-group input::placeholder{color:var(--border)}
+.payment-icons{display:flex;gap:8px;margin-bottom:20px}
+.pay-icon{background:var(--white);border:.5px solid var(--border);
+  padding:6px 12px;font-size:.65rem;color:var(--muted);letter-spacing:.08em}
+.place-order-btn{width:100%;background:var(--terra);color:var(--linen);
+  font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;padding:18px;
+  margin-top:8px;transition:background .2s}
+.place-order-btn:hover{background:#a04e30}
+.secure-note{text-align:center;font-size:.65rem;color:var(--muted);
+  margin-top:10px;letter-spacing:.06em}
+.order-summary{background:var(--linen2);border:.5px solid var(--border);padding:28px;
+  position:sticky;top:100px}
+.order-summary h3{font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:1.3rem;color:var(--slate);margin-bottom:24px}
+.summary-item{display:flex;align-items:center;gap:12px;margin-bottom:16px;
+  padding-bottom:16px;border-bottom:.5px solid var(--border)}
+.summary-item:last-of-type{border-bottom:none}
+.summary-item-img{width:54px;height:68px;background:var(--linen);
+  border:.5px solid var(--border);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0}
+.summary-item-details{flex:1}
+.summary-item-name{font-size:.82rem;color:var(--slate);font-weight:400;margin-bottom:2px}
+.summary-item-qty{font-size:.72rem;color:var(--muted)}
+.summary-item-price{font-size:.85rem;color:var(--char)}
+.summary-divider{border:none;border-top:.5px solid var(--border);margin:16px 0}
+.summary-row{display:flex;justify-content:space-between;margin-bottom:8px}
+.summary-row span{font-size:.8rem;color:var(--muted)}
+.summary-row strong{font-size:.88rem;color:var(--slate);font-weight:400}
+.summary-total{display:flex;justify-content:space-between;margin-top:12px;
+  padding-top:12px;border-top:.5px solid var(--border)}
+.summary-total span{font-size:.9rem;font-weight:500;color:var(--slate)}
+.summary-total strong{font-size:1rem;font-weight:500;color:var(--slate)}
+
+/* ── SUCCESS PAGE ── */
+.success-page{display:none;min-height:100vh;margin-top:69px;
+  background:var(--linen);padding:100px 40px;text-align:center}
+.success-icon{width:64px;height:64px;background:var(--success);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;margin:0 auto 28px;font-size:1.5rem}
+.success-page h2{font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:2.5rem;color:var(--slate);margin-bottom:12px}
+.success-page p{font-size:.9rem;color:var(--muted);line-height:1.8;
+  max-width:440px;margin:0 auto 32px}
+.success-order{background:var(--linen2);border:.5px solid var(--border);
+  display:inline-block;padding:12px 32px;font-size:.75rem;color:var(--muted);
+  letter-spacing:.08em;margin-bottom:32px}
+.back-home-btn{display:inline-block;background:var(--slate);color:var(--linen);
+  font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;padding:14px 32px;
+  transition:background .2s}
+.back-home-btn:hover{background:var(--terra);cursor:pointer}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--slate);color:var(--linen);font-size:.75rem;letter-spacing:.1em;
+  padding:12px 24px;z-index:500;transition:transform .3s ease;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:18px 24px}
+  .nav-links{display:none}
+  .hero{grid-template-columns:1fr}
+  .hero-right{min-height:240px}
+  .section{padding:56px 24px}
+  .product-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .story-strip{grid-template-columns:1fr;padding:40px 24px}
+  .newsletter{padding:56px 24px}
+  .newsletter-form{flex-direction:column}
+  .newsletter-input{border-right:.5px solid var(--border);border-bottom:none}
+  footer{grid-template-columns:1fr;padding:48px 24px;gap:28px}
+  .footer-bottom{padding:16px 24px;flex-direction:column;gap:8px;text-align:center}
+  .cart-drawer{width:100%;max-width:420px}
+  .checkout-container{grid-template-columns:1fr;padding:0 24px}
+  .order-summary{position:static}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+  <a href="#" class="nav-logo" onclick="showHome()">Pripar</a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showHome();scrollToProducts()">Shop</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Our Makers</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="openCart()">
+      <span>Cart</span>
+      <span class="cart-count hidden" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══════════════════════ HOME PAGE ══════════════════════ -->
+<div id="home-page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">Kolkata, India · Est. 2025</p>
+      <h1 class="hero-title">Natural<br>Craft.</h1>
+      <p class="hero-sub">Handcrafted objects from Bengal's oldest traditions, made for considered British homes.</p>
+      <a class="hero-cta" href="#" onclick="scrollToProducts()">Shop the Collection</a>
+    </div>
+    <div class="hero-right">
+      <div class="hero-img">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="8" y="8" width="32" height="32" stroke="#2C3E35" stroke-width="1.5"/><line x1="8" y1="8" x2="40" y2="40" stroke="#2C3E35" stroke-width="0.8"/><line x1="40" y1="8" x2="8" y2="40" stroke="#2C3E35" stroke-width="0.8"/></svg>
+        <span class="hero-img-label">Kantha Throw</span>
+      </div>
+      <div class="hero-img">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><rect x="6" y="6" width="24" height="24" stroke="#2C3E35" stroke-width="1"/><line x1="6" y1="6" x2="30" y2="30" stroke="#2C3E35" stroke-width="0.6"/><line x1="30" y1="6" x2="6" y2="30" stroke="#2C3E35" stroke-width="0.6"/></svg>
+        <span class="hero-img-label">Jute Basket</span>
+      </div>
+      <div class="hero-img">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><rect x="6" y="6" width="24" height="24" stroke="#2C3E35" stroke-width="1"/><line x1="6" y1="6" x2="30" y2="30" stroke="#2C3E35" stroke-width="0.6"/><line x1="30" y1="6" x2="6" y2="30" stroke="#2C3E35" stroke-width="0.6"/></svg>
+        <span class="hero-img-label">Pillow Cover</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section class="section" id="products-section" style="background:var(--linen)">
+    <div class="section-head">
+      <h2 class="section-title">The Collection</h2>
+      <a class="section-link" href="#">View all</a>
+    </div>
+    <div class="filters" id="filters">
+      <button class="filter-btn active" onclick="filterProducts('all',this)">All</button>
+      <button class="filter-btn" onclick="filterProducts('kantha',this)">Kantha Stitch</button>
+      <button class="filter-btn" onclick="filterProducts('jute',this)">Jute</button>
+      <button class="filter-btn" onclick="filterProducts('pillow',this)">Pillow Covers</button>
+      <button class="filter-btn" onclick="filterProducts('art',this)">Folk Art</button>
+      <button class="filter-btn" onclick="filterProducts('towel',this)">Towels</button>
+    </div>
+    <div class="product-grid" id="product-grid"></div>
+  </section>
+
+  <!-- STORY STRIP -->
+  <section class="story-strip">
+    <div class="story-item">
+      <div class="story-num">01</div>
+      <p class="story-label">Artisan Made</p>
+      <p class="story-text">Every piece is made by hand in Bengal. We visit the makers, know their names, and pay fairly. No factories, no middlemen.</p>
+      <div class="story-bar"></div>
+    </div>
+    <div class="story-item">
+      <div class="story-num">02</div>
+      <p class="story-label">Direct from Source</p>
+      <p class="story-text">We ship from Kolkata directly to your address in Britain. No warehouses, no pallets. Your order leaves India within 48 hours.</p>
+      <div class="story-bar"></div>
+    </div>
+    <div class="story-item">
+      <div class="story-num">03</div>
+      <p class="story-label">Honestly Priced</p>
+      <p class="story-text">By cutting every layer between maker and buyer, we offer genuinely crafted pieces at prices that make sense.</p>
+      <div class="story-bar"></div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter">
+    <p class="eyebrow" style="color:var(--terra);margin-bottom:16px">Stay Connected</p>
+    <h2 class="newsletter-title">New arrivals, maker stories<br>and early access.</h2>
+    <p class="newsletter-sub">Join the Pripar list. No spam — only things worth reading.</p>
+    <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+      <input class="newsletter-input" type="email" placeholder="your@email.co.uk" required>
+      <button class="newsletter-btn" type="submit">Subscribe</button>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">
+      <div class="footer-logo">Pripar</div>
+      <p>Natural craft. Considered living.<br>Kolkata, India → British homes.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#">Kantha Stitch</a></li>
+        <li><a href="#">Jute Handicrafts</a></li>
+        <li><a href="#">Pillow Covers</a></li>
+        <li><a href="#">Folk Art Prints</a></li>
+        <li><a href="#">Hand Towels</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Information</h4>
+      <ul>
+        <li><a href="#">About Pripar</a></li>
+        <li><a href="#">Our Makers</a></li>
+        <li><a href="#">Shipping to UK</a></li>
+        <li><a href="#">Returns Policy</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </footer>
+  <div class="footer-bottom">
+    <p>© 2025 Pripar Ltd · pripar.store · Kolkata, India</p>
+    <p>UK delivery 4–5 days · Duties included · FedEx International</p>
+  </div>
+
+</div><!-- end home-page -->
+
+<!-- ══════════════════════ CHECKOUT PAGE ══════════════════════ -->
+<div id="checkout-page" class="checkout-page">
+  <div class="checkout-container">
+    <div class="checkout-left">
+      <h2>Checkout</h2>
+
+      <div class="form-section">
+        <h3>Contact</h3>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Email address</label>
+            <input type="email" placeholder="you@example.co.uk">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Delivery address</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First name</label>
+            <input type="text" placeholder="Sarah">
+          </div>
+          <div class="form-group">
+            <label>Last name</label>
+            <input type="text" placeholder="Mitchell">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Address line 1</label>
+            <input type="text" placeholder="14 Harvest Lane">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Address line 2 (optional)</label>
+            <input type="text" placeholder="Flat 3">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" placeholder="London">
+          </div>
+          <div class="form-group">
+            <label>Postcode</label>
+            <input type="text" placeholder="SW1A 1AA">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Country</label>
+            <select>
+              <option>United Kingdom</option>
+              <option>Ireland</option>
+              <option>Scotland</option>
+              <option>Wales</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Payment</h3>
+        <div class="payment-icons">
+          <span class="pay-icon">Visa</span>
+          <span class="pay-icon">Mastercard</span>
+          <span class="pay-icon">PayPal</span>
+          <span class="pay-icon">Apple Pay</span>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Card number</label>
+            <input type="text" placeholder="1234 5678 9012 3456" maxlength="19">
+          </div>
+          <div class="form-group">
+            <label>Name on card</label>
+            <input type="text" placeholder="Sarah Mitchell">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Expiry date</label>
+            <input type="text" placeholder="MM / YY" maxlength="7">
+          </div>
+          <div class="form-group">
+            <label>Security code</label>
+            <input type="text" placeholder="CVV" maxlength="4">
+          </div>
+        </div>
+        <button class="place-order-btn" onclick="placeOrder()">Place Order — Pay Now</button>
+        <p class="secure-note">🔒 Secure checkout · SSL encrypted · pripar.store</p>
+      </div>
+    </div>
+
+    <div class="checkout-right">
+      <div class="order-summary">
+        <h3>Your Order</h3>
+        <div id="summary-items"></div>
+        <hr class="summary-divider">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <strong id="summary-subtotal">£0.00</strong>
+        </div>
+        <div class="summary-row">
+          <span>Shipping to UK</span>
+          <strong style="color:var(--success)">Included</strong>
+        </div>
+        <div class="summary-row">
+          <span>Import duties</span>
+          <strong style="color:var(--success)">Included</strong>
+        </div>
+        <div class="summary-total">
+          <span>Total</span>
+          <strong id="summary-total">£0.00</strong>
+        </div>
+        <p style="font-size:.68rem;color:var(--muted);margin-top:12px;line-height:1.6;font-style:italic">
+          Delivered from Kolkata via FedEx International. Expected arrival: 4–5 working days.
+        </p>
+      </div>
+      <button class="continue-btn" style="margin-top:12px" onclick="showHome()">← Back to shop</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ SUCCESS PAGE ══════════════════════ -->
+<div id="success-page" class="success-page">
+  <div class="success-icon">✓</div>
+  <h2>Order confirmed.</h2>
+  <p>Thank you for your order. A confirmation has been sent to your email. Your Pripar pieces are being prepared by our makers in Kolkata and will be with you in 4–5 working days.</p>
+  <div class="success-order" id="success-order-num">Order #PR-00001</div>
+  <br>
+  <button class="back-home-btn" onclick="showHome();clearCart()">Continue Shopping</button>
+</div>
+
+<!-- ── CART DRAWER ── -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-header">
+    <h2>Your Cart</h2>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <div class="cart-empty">
+      <p>Your cart is empty.<br>Add something beautiful.</p>
+    </div>
+  </div>
+  <div class="cart-footer" id="cart-footer" style="display:none">
+    <div class="cart-subtotal">
+      <span>Subtotal</span>
+      <strong id="cart-total">£0.00</strong>
+    </div>
+    <p class="cart-shipping">Free shipping · Duties included · 4–5 day UK delivery</p>
+    <button class="checkout-btn" onclick="goToCheckout()">Proceed to Checkout</button>
+    <button class="continue-btn" onclick="closeCart()">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast">Added to cart</div>
+
+<script>
+// ── PRODUCT DATA ──────────────────────────────────────────────────────────────
+const products = [
+  {id:1,name:'Kantha Stitch Throw',origin:'Bengal · Hand Embroidered',
+   desc:'Traditional running-stitch embroidery on layered cotton. Each piece takes 3–4 days to complete.',
+   price:48,category:'kantha',badge:'Bestseller',badgeType:''},
+  {id:2,name:'Block Print Pillow Cover Set',origin:'Bengal · Block Print',
+   desc:'Set of 2 covers in natural dye on 200GSM cotton. 45×45cm. Hidden zip closure.',
+   price:32,category:'pillow',badge:'New',badgeType:'new'},
+  {id:3,name:'Jute Storage Basket — Medium',origin:'Kolkata · Hand Woven',
+   desc:'Hand-woven by artisans in Kolkata\'s Hooghly district. 28cm diameter, 20cm height.',
+   price:24,category:'jute',badge:'',badgeType:''},
+  {id:4,name:'Patachitra Folk Art Print',origin:'Bengal · Folk Art',
+   desc:'Hand-painted by Patua artists from Naya village, Pingla. Rolled archival canvas, 40×60cm.',
+   price:55,category:'art',badge:'',badgeType:''},
+  {id:5,name:'Indigo Hand Towel Set',origin:'Bengal · Natural Dye',
+   desc:'Set of 2 hand towels in indigo-dyed cotton. 50×90cm. 420GSM. Oeko-Tex certified.',
+   price:28,category:'towel',badge:'',badgeType:''},
+  {id:6,name:'Kantha Quilted Cushion Cover',origin:'Bengal · Hand Embroidered',
+   desc:'Kantha-embroidered cushion cover with block print reverse. 45×45cm. Natural cotton.',
+   price:26,category:'kantha',badge:'',badgeType:''},
+  {id:7,name:'Jute Wall Hanging',origin:'Kolkata · Hand Woven',
+   desc:'Decorative wall hanging in natural jute with wooden dowel. 40cm wide × 55cm drop.',
+   price:34,category:'jute',badge:'New',badgeType:'new'},
+  {id:8,name:'Madhubani Art Print',origin:'Bihar · Folk Art',
+   desc:'Traditional Madhubani painting on handmade paper. 30×42cm. Each piece unique.',
+   price:42,category:'art',badge:'',badgeType:''},
+];
+
+// ── CART STATE ────────────────────────────────────────────────────────────────
+let cart = [];
+
+// ── RENDER PRODUCTS ───────────────────────────────────────────────────────────
+function renderProducts(filter='all'){
+  const grid = document.getElementById('product-grid');
+  const filtered = filter==='all' ? products : products.filter(p=>p.category===filter);
+  grid.innerHTML = filtered.map(p=>`
+    <div class="product-card">
+      <div class="product-img" onclick="addToCart(${p.id})">
+        ${p.badge?`<span class="product-badge ${p.badgeType}">${p.badge}</span>`:''}
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect x="7" y="7" width="30" height="30" stroke="#C9B99A" stroke-width="1"/><line x1="7" y1="7" x2="37" y2="37" stroke="#C9B99A" stroke-width="0.6"/><line x1="37" y1="7" x2="7" y2="37" stroke="#C9B99A" stroke-width="0.6"/></svg>
+        <div class="product-overlay">
+          <button class="quick-add" onclick="event.stopPropagation();addToCart(${p.id})">Quick Add</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-origin">${p.origin}</p>
+        <p class="product-name">${p.name}</p>
+        <p class="product-desc">${p.desc}</p>
+        <div class="product-footer">
+          <span class="product-price">£${p.price}.00</span>
+          <button class="add-to-cart" id="atc-${p.id}" onclick="addToCart(${p.id})">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterProducts(cat, btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts(cat);
+}
+
+// ── CART LOGIC ────────────────────────────────────────────────────────────────
+function addToCart(id){
+  const product = products.find(p=>p.id===id);
+  const existing = cart.find(i=>i.id===id);
+  if(existing){ existing.qty++; }
+  else { cart.push({...product, qty:1}); }
+  updateCartUI();
+  showToast(`${product.name} added`);
+  const btn = document.getElementById(`atc-${id}`);
+  if(btn){ btn.textContent='Added ✓'; btn.classList.add('added');
+    setTimeout(()=>{ btn.textContent='Add to Cart'; btn.classList.remove('added'); },1500); }
+}
+
+function removeFromCart(id){
+  cart = cart.filter(i=>i.id!==id);
+  updateCartUI();
+}
+
+function changeQty(id, delta){
+  const item = cart.find(i=>i.id===id);
+  if(!item) return;
+  item.qty += delta;
+  if(item.qty <= 0) removeFromCart(id);
+  else updateCartUI();
+}
+
+function clearCart(){
+  cart = [];
+  updateCartUI();
+}
+
+function cartTotal(){
+  return cart.reduce((sum,i)=>sum+i.price*i.qty,0);
+}
+
+function updateCartUI(){
+  const total = cartTotal();
+  const count = cart.reduce((s,i)=>s+i.qty,0);
+  const countEl = document.getElementById('cart-count');
+  countEl.textContent = count;
+  countEl.classList.toggle('hidden', count===0);
+
+  const itemsEl = document.getElementById('cart-items');
+  const footerEl = document.getElementById('cart-footer');
+
+  if(cart.length===0){
+    itemsEl.innerHTML='<div class="cart-empty"><p>Your cart is empty.<br>Add something beautiful.</p></div>';
+    footerEl.style.display='none';
+  } else {
+    itemsEl.innerHTML = cart.map(i=>`
+      <div class="cart-item">
+        <div class="cart-item-img">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="4" width="20" height="20" stroke="#C9B99A" stroke-width="0.8"/><line x1="4" y1="4" x2="24" y2="24" stroke="#C9B99A" stroke-width="0.5"/><line x1="24" y1="4" x2="4" y2="24" stroke="#C9B99A" stroke-width="0.5"/></svg>
+        </div>
+        <div class="cart-item-info">
+          <p class="cart-item-name">${i.name}</p>
+          <p class="cart-item-origin">${i.origin}</p>
+          <p class="cart-item-price">£${(i.price*i.qty).toFixed(2)}</p>
+          <div class="cart-item-qty">
+            <button class="qty-btn" onclick="changeQty(${i.id},-1)">−</button>
+            <span class="qty-num">${i.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${i.id},1)">+</button>
+            <button class="cart-item-remove" onclick="removeFromCart(${i.id})">Remove</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('cart-total').textContent=`£${total.toFixed(2)}`;
+    footerEl.style.display='block';
+  }
+
+  // Update checkout summary
+  document.getElementById('summary-subtotal').textContent=`£${total.toFixed(2)}`;
+  document.getElementById('summary-total').textContent=`£${total.toFixed(2)}`;
+  const summaryItems = document.getElementById('summary-items');
+  if(summaryItems){
+    summaryItems.innerHTML = cart.map(i=>`
+      <div class="summary-item">
+        <div class="summary-item-img">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" stroke="#C9B99A" stroke-width="0.8"/><line x1="3" y1="3" x2="21" y2="21" stroke="#C9B99A" stroke-width="0.5"/><line x1="21" y1="3" x2="3" y2="21" stroke="#C9B99A" stroke-width="0.5"/></svg>
+        </div>
+        <div class="summary-item-details">
+          <p class="summary-item-name">${i.name}</p>
+          <p class="summary-item-qty">Qty: ${i.qty}</p>
+        </div>
+        <span class="summary-item-price">£${(i.price*i.qty).toFixed(2)}</span>
+      </div>
+    `).join('');
+  }
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function showHome(){
+  document.getElementById('home-page').style.display='block';
+  document.getElementById('checkout-page').style.display='none';
+  document.getElementById('success-page').style.display='none';
+  window.scrollTo(0,0);
+}
+
+function showCheckout(){
+  document.getElementById('home-page').style.display='none';
+  document.getElementById('checkout-page').style.display='block';
+  document.getElementById('success-page').style.display='none';
+  window.scrollTo(0,0);
+}
+
+function showSuccess(){
+  document.getElementById('home-page').style.display='none';
+  document.getElementById('checkout-page').style.display='none';
+  document.getElementById('success-page').style.display='block';
+  const num = 'PR-' + String(Math.floor(10000+Math.random()*90000));
+  document.getElementById('success-order-num').textContent=`Order #${num}`;
+  window.scrollTo(0,0);
+}
+
+// ── CART DRAWER ───────────────────────────────────────────────────────────────
+function openCart(){
+  document.getElementById('cart-overlay').classList.add('open');
+  document.getElementById('cart-drawer').classList.add('open');
+}
+function closeCart(){
+  document.getElementById('cart-overlay').classList.remove('open');
+  document.getElementById('cart-drawer').classList.remove('open');
+}
+function goToCheckout(){
+  if(cart.length===0) return;
+  closeCart();
+  showCheckout();
+}
+
+// ── CHECKOUT ──────────────────────────────────────────────────────────────────
+function placeOrder(){
+  const inputs = document.querySelectorAll('#checkout-page input[type="text"], #checkout-page input[type="email"]');
+  let valid = true;
+  inputs.forEach(i=>{ if(!i.value.trim()){ i.style.borderColor='var(--terra)'; valid=false; }
+    else { i.style.borderColor='var(--border)'; }});
+  if(!valid){ showToast('Please fill in all fields'); return; }
+  showSuccess();
+}
+
+// ── SCROLL TO PRODUCTS ────────────────────────────────────────────────────────
+function scrollToProducts(){
+  setTimeout(()=>{
+    const el = document.getElementById('products-section');
+    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  },100);
+}
+
+// ── NEWSLETTER ───────────────────────────────────────────────────────────────
+function handleNewsletter(e){
+  e.preventDefault();
+  const btn = e.target.querySelector('button');
+  btn.textContent='You\'re on the list';
+  btn.style.background='var(--success)';
+  btn.disabled=true;
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderProducts();
+updateCartUI();
+</script>
+</body>
+</html>
